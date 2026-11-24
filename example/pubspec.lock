@@ -91,8 +91,8 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: e355e0790cf962e0fc8ac9d3daff25368daa9c3a
-      url: "https://github.com/jjwwii/flutter-api-kit.git"
+      resolved-ref: c663592fef2383ee63713ab35e59fca59152e465
+      url: "https://github.com/cwi112/flutter-api-kit.git"
     source: git
     version: "1.0.0"
   flutter_lints:

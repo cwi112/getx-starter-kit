@@ -22,7 +22,7 @@ getx_starter_kit     ← BaseView · BaseController · BaseBinding · PageState 
 
 | 패키지 | 담당 | GetX 필요 |
 | --- | --- | --- |
-| [flutter_api_kit](https://github.com/jjwwii/flutter-api-kit) | `ApiClient`, `BaseRepository.safeCall`, `Failure`, `ParsingUtil`, `LoggerUtil`, `context` 확장 | 아니요 |
+| [flutter_api_kit](https://github.com/cwi112/flutter-api-kit) | `ApiClient`, `BaseRepository.safeCall`, `Failure`, `ParsingUtil`, `LoggerUtil`, `context` 확장 | 아니요 |
 | **getx_starter_kit** (이 레포) | `BaseView`, `BaseController`, `BaseBinding`, `PageState`, `PageStateBuilder`, 공용 위젯 | 예 |
 
 - 네트워크 계층은 상태관리와 무관해서, Provider·Riverpod 프로젝트에서는 `flutter_api_kit`만 가져다 쓸 수 있습니다.
@@ -71,7 +71,7 @@ View (BaseView) ──Obx──▶ Controller (BaseController) ──▶ Reposit
 dependencies:
   getx_starter_kit:
     git:
-      url: https://github.com/jjwwii/getx-starter-kit.git
+      url: https://github.com/cwi112/getx-starter-kit.git
       ref: master
 ```
 
@@ -184,7 +184,7 @@ cd example && flutter test   # 예제 앱 5개
 | `PageStateBuilder` | 상태별 화면 전환, 다시 시도 버튼 |
 | 예제 앱 | 메뉴 → 7개 예제 화면 이동, PageState 전환, 연타 방지, 가짜 Repository로 조회 성공·실패 후 재시도 |
 
-`safeCall`, `Failure`, `ParsingUtil` 테스트(11개)는 [flutter_api_kit](https://github.com/jjwwii/flutter-api-kit)에 있습니다.
+`safeCall`, `Failure`, `ParsingUtil` 테스트(11개)는 [flutter_api_kit](https://github.com/cwi112/flutter-api-kit)에 있습니다.
 
 ## 예제 앱
 
@@ -233,7 +233,7 @@ Android 빌드 설정은 Flutter 3.50 템플릿 기준(Gradle 9.5, AGP 9.3, Kotl
 ## 기술 스택
 
 - **상태관리 · 라우팅 · DI**: GetX
-- **네트워크**: [flutter_api_kit](https://github.com/jjwwii/flutter-api-kit) (Dio, pretty_dio_logger)
+- **네트워크**: [flutter_api_kit](https://github.com/cwi112/flutter-api-kit) (Dio, pretty_dio_logger)
 - **결과 타입**: dartz `Either`
 - **로그**: logger
 - **테스트**: flutter_test (단위, 위젯)

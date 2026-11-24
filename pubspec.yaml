@@ -1,7 +1,7 @@
 name: getx_starter_kit
 description: "GetX 기반 Flutter 앱의 기본 프레임. BaseView / BaseController / BaseBinding / PageState 를 제공하고, 네트워크 계층은 flutter_api_kit 을 사용합니다."
 version: 2.0.0
-homepage: https://github.com/jjwwii/getx-starter-kit
+homepage: https://github.com/cwi112/getx-starter-kit
 publish_to: 'none'
 
 environment:
@@ -21,7 +21,7 @@ dependencies:
   # 네트워크 · Failure · 유틸 (상태관리 무관 계층, re-export)
   flutter_api_kit:
     git:
-      url: https://github.com/jjwwii/flutter-api-kit.git
+      url: https://github.com/cwi112/flutter-api-kit.git
       ref: main
 
 dev_dependencies:
