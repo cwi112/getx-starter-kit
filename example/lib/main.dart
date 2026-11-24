@@ -1,22 +1,27 @@
-import 'package:example/home/home_view.dart';
+import 'package:app_base_getx/app_base_getx.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'routes/app_pages.dart';
 
 void main() {
-  runApp(const MyApp());
+  LoggerUtil.init();
+  ApiClient.init(baseUrl: 'https://jsonplaceholder.typicode.com');
+
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: HomeView(),
+    return GetMaterialApp(
+      title: 'app_base_getx example',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.indigo),
+      initialRoute: AppPages.initialRoute,
+      getPages: AppPages.routes,
     );
   }
 }
