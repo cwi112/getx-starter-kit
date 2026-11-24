@@ -12,6 +12,9 @@ import 'package:app_base_getx/app_base_getx.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/demo_widgets.dart';
+import '../../theme/app_theme.dart';
+
 class PageStateDemoController extends BaseController {
   final pageState = PageState.success.obs;
   final useCustomBuilder = false.obs;
@@ -40,38 +43,90 @@ class PageStateDemoView extends BaseView<PageStateDemoController> {
   const PageStateDemoView({super.key});
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => AppBar(title: const Text('3. PageState'));
+  PreferredSizeWidget? appBar(BuildContext context) => AppBar(title: const Text('PageState'));
 
   @override
   Widget body(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return DemoScrollBody(
       children: [
-        // 상태 선택 칩
-        Obx(
-          () => Wrap(
-            spacing: 8,
-            children: PageState.values
-                .map((s) => ChoiceChip(
-                      label: Text(s.name),
-                      selected: controller.pageState.value == s,
-                      onSelected: (_) => controller.change(s),
-                    ))
-                .toList(),
-          ),
-        ).paddingAll(16),
-        Obx(
-          () => SwitchListTile(
-            title: const Text('커스텀 빌더 사용'),
-            subtitle: const Text('끄면 패키지 기본 화면, 켜면 직접 만든 화면'),
-            value: controller.useCustomBuilder.value,
-            onChanged: (v) => controller.useCustomBuilder.value = v,
+        const DemoHeader(
+          icon: Icons.layers_rounded,
+          color: AppColors.teal,
+          points: [
+            '화면 상태를 Rx<PageState> 하나로 관리',
+            'PageStateBuilder가 상태별 화면을 자동 선택',
+            'success 외에는 생략하면 기본 화면 사용',
+          ],
+        ),
+        DemoSection(
+          title: '상태 바꾸기',
+          description: '칩을 눌러 아래 미리보기가 어떻게 바뀌는지 확인하세요.',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Obx(
+                () => Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final s in PageState.values)
+                      ChoiceChip(
+                        label: Text(s.name),
+                        selected: controller.pageState.value == s,
+                        selectedColor: AppColors.teal.withValues(alpha: 0.18),
+                        onSelected: (_) => controller.change(s),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6),
+              Obx(
+                () => SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('커스텀 빌더 사용'),
+                  subtitle: const Text('끄면 패키지 기본 화면, 켜면 직접 만든 화면'),
+                  value: controller.useCustomBuilder.value,
+                  onChanged: (v) => controller.useCustomBuilder.value = v,
+                ),
+              ),
+            ],
           ),
         ),
-        Obx(() => Text('다시 시도 누른 횟수: ${controller.retryCount.value}').paddingSymmetric(horizontal: 16)),
-        const Divider(),
-        // 상태에 따라 바뀌는 영역
-        Expanded(child: Obx(() => controller.useCustomBuilder.value ? _custom() : _default())),
+        DemoSection(
+          title: '미리보기',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Obx(() => Row(
+                    children: [
+                      StatusPill(text: controller.pageState.value.name, color: AppColors.teal),
+                      const Spacer(),
+                      Text('다시 시도 ${controller.retryCount.value}회',
+                          style: const TextStyle(color: AppColors.textWeak, fontSize: 13)),
+                    ],
+                  )),
+              const SizedBox(height: 12),
+              // 상태에 따라 바뀌는 영역
+              Container(
+                height: 260,
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Obx(() => controller.useCustomBuilder.value ? _custom() : _default()),
+              ),
+            ],
+          ),
+        ),
+        const DemoSection(
+          title: '사용법',
+          code: 'PageStateBuilder(\n'
+              '  state: controller.pageState,\n'
+              '  onRetry: controller.load,      // 실패 화면의 다시 시도\n'
+              '  success: (_) => ListView(...),\n'
+              '  empty: (_) => MyEmptyView(),   // 선택: 직접 만든 화면\n'
+              ')',
+        ),
       ],
     );
   }
@@ -80,20 +135,47 @@ class PageStateDemoView extends BaseView<PageStateDemoController> {
   Widget _default() => PageStateBuilder(
         state: controller.pageState,
         onRetry: controller.retry,
-        success: (_) => const Center(child: Text('데이터를 불러왔습니다 ✓', style: TextStyle(fontSize: 18))),
+        success: (_) => const _SuccessPreview(),
       );
 
   /// 필요한 상태만 골라서 화면을 바꿀 수 있다. 넘기지 않은 상태는 기본 화면.
   Widget _custom() => PageStateBuilder(
         state: controller.pageState,
         onRetry: controller.retry,
-        success: (_) => const Center(child: Icon(Icons.check_circle, size: 80, color: Colors.green)),
-        loading: (_) => const Center(child: LinearProgressIndicator()),
-        empty: (_) => const StateMessage(title: '아직 등록된 카드가 없어요', description: '카드를 등록해 보세요'),
+        success: (_) => const _SuccessPreview(),
+        loading: (_) => const Center(
+          child: SizedBox(width: 160, child: LinearProgressIndicator(color: AppColors.teal)),
+        ),
+        empty: (_) => const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.credit_card_off_rounded, size: 48, color: AppColors.textWeak),
+            SizedBox(height: 8),
+            StateMessage(title: '아직 등록된 카드가 없어요', description: '카드를 등록해 보세요'),
+          ],
+        ),
         failed: (_) => StateMessage(
           title: '앗, 문제가 생겼어요',
           retryText: '새로고침',
           onRetry: controller.retry,
         ),
       );
+}
+
+class _SuccessPreview extends StatelessWidget {
+  const _SuccessPreview();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.check_circle_rounded, size: 56, color: AppColors.success),
+          SizedBox(height: 10),
+          Text('데이터를 불러왔습니다', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
 }

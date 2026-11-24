@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'routes/app_pages.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   // 로그 설정. 생략해도 기본 Logger 로 동작한다.
@@ -30,7 +31,7 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: 'app_base_getx example',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.indigo),
+      theme: AppTheme.light, // 색·버튼·카드 스타일은 theme/app_theme.dart 에서 관리
       initialRoute: AppPages.initialRoute,
       getPages: AppPages.routes,
     );

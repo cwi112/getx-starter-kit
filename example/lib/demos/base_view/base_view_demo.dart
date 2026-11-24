@@ -11,6 +11,9 @@ import 'package:app_base_getx/app_base_getx.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/demo_widgets.dart';
+import '../../theme/app_theme.dart';
+
 class BaseViewDemoController extends BaseController {
   // .obs 를 붙이면 관찰 가능한 값(Rx)이 된다.
   final count = 0.obs;
@@ -33,11 +36,11 @@ class BaseViewDemoView extends BaseView<BaseViewDemoController> {
 
   // [필수] 앱바. 앱바가 없는 화면이면 null 을 반환한다.
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => AppBar(title: const Text('1. BaseView 기본'));
+  PreferredSizeWidget? appBar(BuildContext context) => AppBar(title: const Text('BaseView 기본'));
 
   // [선택] 배경색. 재정의하지 않으면 테마 기본색.
   @override
-  Color? pageColor(BuildContext context) => Colors.indigo.shade50;
+  Color? pageColor(BuildContext context) => const Color(0xFFF1F0FF);
 
   // [선택] 하단 탭바. Obx 로 감싸 탭 선택이 바뀌면 다시 그린다.
   @override
@@ -46,8 +49,8 @@ class BaseViewDemoView extends BaseView<BaseViewDemoController> {
           selectedIndex: controller.tabIndex.value,
           onDestinationSelected: controller.changeTab,
           destinations: const [
-            NavigationDestination(icon: Icon(Icons.home), label: '홈'),
-            NavigationDestination(icon: Icon(Icons.person), label: '내 정보'),
+            NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: '홈'),
+            NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: '내 정보'),
           ],
         ),
       );
@@ -64,17 +67,60 @@ class BaseViewDemoView extends BaseView<BaseViewDemoController> {
   // [필수] 본문
   @override
   Widget body(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(20),
+    return DemoScrollBody(
       children: [
-        const Text('아래 입력창을 누른 뒤 빈 곳을 탭하면 키보드가 내려갑니다.'),
-        const Height(12),
-        const TextField(decoration: InputDecoration(labelText: '입력해 보세요', border: OutlineInputBorder())),
-        const Height(30),
-        // count 가 바뀔 때 이 Text 만 다시 그려진다.
-        Obx(() => Text('+ 버튼 누른 횟수: ${controller.count.value}', style: const TextStyle(fontSize: 18))),
-        const Height(12),
-        Obx(() => Text('선택된 탭: ${controller.tabIndex.value == 0 ? '홈' : '내 정보'}')),
+        const DemoHeader(
+          icon: Icons.web_asset_rounded,
+          color: AppColors.indigo,
+          points: [
+            'appBar()와 body()만 구현하면 화면 완성',
+            '배경색·하단 탭바·FAB는 필요할 때만 재정의',
+            '빈 곳을 탭하면 키보드가 자동으로 내려감',
+          ],
+        ),
+        const DemoSection(
+          title: '최소 구현',
+          description: '이 두 메서드만 구현하면 로딩 오버레이, SafeArea, 키보드 처리가 자동으로 붙습니다.',
+          code: 'class MyView extends BaseView<MyController> {\n'
+              '  @override\n'
+              '  PreferredSizeWidget? appBar(context) => AppBar(...);\n\n'
+              '  @override\n'
+              '  Widget body(context) => ...;\n'
+              '}',
+        ),
+        DemoSection(
+          title: 'Obx로 부분 갱신',
+          description: '오른쪽 아래 + 버튼을 누르면 숫자만 다시 그려집니다.',
+          code: 'final count = 0.obs;\nObx(() => Text("\${controller.count.value}"))',
+          child: Row(
+            children: [
+              Obx(
+                () => Text(
+                  '${controller.count.value}',
+                  style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w800, color: AppColors.indigo),
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(child: Text('+ 버튼 누른 횟수', style: TextStyle(color: AppColors.textWeak))),
+              Obx(() => StatusPill(
+                    text: '탭: ${controller.tabIndex.value == 0 ? '홈' : '내 정보'}',
+                    color: AppColors.indigo,
+                  )),
+            ],
+          ),
+        ),
+        const DemoSection(
+          title: '키보드 자동 내리기',
+          description: '입력창을 누른 뒤 화면의 빈 곳을 탭해 보세요. (끄려면 unfocusOnTap => false)',
+          child: TextField(decoration: InputDecoration(hintText: '여기를 눌러 입력', prefixIcon: Icon(Icons.edit))),
+        ),
+        const DemoSection(
+          title: '재정의한 옵션',
+          description: '이 화면은 아래 메서드를 재정의했습니다.',
+          code: 'Color? pageColor(context) => Color(0xFFF1F0FF);\n'
+              'Widget? bottomNavigationBar(context) => NavigationBar(...);\n'
+              'Widget? floatingActionButton(context) => FloatingActionButton(...);',
+        ),
       ],
     );
   }

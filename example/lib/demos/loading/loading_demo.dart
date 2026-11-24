@@ -12,6 +12,9 @@ import 'package:app_base_getx/app_base_getx.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/demo_widgets.dart';
+import '../../theme/app_theme.dart';
+
 class LoadingDemoController extends BaseController {
   final useCustomOverlay = false.obs;
   final log = <String>[].obs;
@@ -73,7 +76,7 @@ class LoadingDemoView extends BaseView<LoadingDemoController> {
   const LoadingDemoView({super.key});
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => AppBar(title: const Text('2. 로딩 오버레이'));
+  PreferredSizeWidget? appBar(BuildContext context) => AppBar(title: const Text('로딩 오버레이'));
 
   /// 로딩 화면 교체. BaseView 가 Obx 안에서 호출하므로 Rx 값을 읽으면 바로 반영된다.
   @override
@@ -81,14 +84,20 @@ class LoadingDemoView extends BaseView<LoadingDemoController> {
     if (!controller.useCustomOverlay.value) return super.loadingOverlay(context, text);
 
     return ColoredBox(
-      color: Colors.white.withValues(alpha: 0.85),
+      color: Colors.white.withValues(alpha: 0.9),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(width: 200, child: LinearProgressIndicator()),
-            const Height(16),
-            Material(type: MaterialType.transparency, child: Text(text.isEmpty ? '잠시만 기다려 주세요' : text)),
+            const IconBadge(icon: Icons.hourglass_top_rounded, color: AppColors.sky, size: 64),
+            const SizedBox(height: 20),
+            const SizedBox(width: 180, child: LinearProgressIndicator(color: AppColors.sky)),
+            const SizedBox(height: 14),
+            Material(
+              type: MaterialType.transparency,
+              child: Text(text.isEmpty ? '잠시만 기다려 주세요' : text,
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.textStrong)),
+            ),
           ],
         ),
       ),
@@ -97,35 +106,110 @@ class LoadingDemoView extends BaseView<LoadingDemoController> {
 
   @override
   Widget body(BuildContext context) {
-    return Column(
+    return DemoScrollBody(
       children: [
-        Obx(
-          () => SwitchListTile(
-            title: const Text('커스텀 로딩 화면 사용'),
-            value: controller.useCustomOverlay.value,
-            onChanged: (v) => controller.useCustomOverlay.value = v,
-          ),
-        ),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            FilledButton(onPressed: controller.manualLoading, child: const Text('직접 켜고 끄기')),
-            FilledButton(onPressed: controller.successTask, child: const Text('runWithLoading 성공')),
-            FilledButton(onPressed: controller.failingTask, child: const Text('runWithLoading 실패')),
-            OutlinedButton(onPressed: controller.rapidTap, child: const Text('연타 방지 확인')),
+        const DemoHeader(
+          icon: Icons.hourglass_top_rounded,
+          color: AppColors.sky,
+          points: [
+            'runWithLoading 하나로 로딩 표시·해제·예외 처리',
+            '로딩 중 재호출은 무시 → 버튼 연타 방지',
+            'loadingOverlay() 재정의로 로딩 디자인 교체',
           ],
-        ).paddingAll(16),
-        const Divider(),
-        Expanded(
+        ),
+        DemoSection(
+          title: '로딩 화면 스타일',
           child: Obx(
-            () => ListView(
-              padding: const EdgeInsets.all(16),
-              children: controller.log.map((e) => Text('• $e')).toList(),
+            () => SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('커스텀 로딩 화면 사용'),
+              subtitle: Text(controller.useCustomOverlay.value ? '직접 만든 흰 배경 로딩' : '패키지 기본 로딩'),
+              value: controller.useCustomOverlay.value,
+              onChanged: (v) => controller.useCustomOverlay.value = v,
             ),
           ),
         ),
+        _ActionSection(
+          title: 'runWithLoading',
+          description: '대부분의 API 호출은 이것 하나면 됩니다. 2초간 "저장 중입니다"를 띄웁니다.',
+          code: 'final result = await runWithLoading(\n  () => repository.save(),\n  text: "저장 중입니다",\n);',
+          label: '성공 작업 실행',
+          icon: Icons.play_arrow_rounded,
+          onPressed: controller.successTask,
+        ),
+        _ActionSection(
+          title: '예외가 나면?',
+          description: '앱이 죽지 않고 null 이 돌아오며 상태는 failed 가 됩니다.',
+          code: 'final result = await runWithLoading(() => throw Exception());\n// result == null',
+          label: '실패 작업 실행',
+          icon: Icons.error_outline_rounded,
+          onPressed: controller.failingTask,
+        ),
+        _ActionSection(
+          title: '직접 켜고 끄기',
+          description: '여러 단계로 나뉜 작업에서 중간에 문구를 바꿀 때 씁니다.',
+          code: 'showLoading(text: "1단계");\nloadingText.value = "2단계";\nhideLoading();',
+          label: '2단계 작업 실행',
+          icon: Icons.tune_rounded,
+          onPressed: controller.manualLoading,
+        ),
+        _ActionSection(
+          title: '연타 방지',
+          description: '같은 작업을 동시에 3번 호출해도 1번만 실행됩니다.',
+          label: '3번 연속 호출',
+          icon: Icons.touch_app_rounded,
+          onPressed: controller.rapidTap,
+        ),
+        LogPanel(
+          logs: controller.log,
+          trailing: Obx(() {
+            final state = controller.scaffoldLoadingState.value;
+            final color = switch (state) {
+              PageState.failed => AppColors.danger,
+              PageState.success => AppColors.success,
+              _ => AppColors.sky,
+            };
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: StatusPill(text: 'scaffoldLoadingState: ${state.name}', color: color),
+            );
+          }),
+        ),
       ],
+    );
+  }
+}
+
+/// 설명 + 코드 + 실행 버튼 한 세트
+class _ActionSection extends StatelessWidget {
+  const _ActionSection({
+    required this.title,
+    required this.description,
+    this.code,
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String title;
+  final String description;
+  final String? code;
+  final String label;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return DemoSection(
+      title: title,
+      description: description,
+      code: code,
+      child: FilledButton.icon(
+        style: FilledButton.styleFrom(backgroundColor: AppColors.sky),
+        onPressed: onPressed,
+        icon: Icon(icon),
+        label: Text(label),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:example/demos/posts/posts_controller.dart';
 import 'package:example/demos/posts/posts_repository.dart';
 import 'package:example/demos/posts/posts_view.dart';
 import 'package:example/main.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 
@@ -22,22 +23,31 @@ void main() {
   tearDown(Get.reset);
 
   testWidgets('메뉴에서 각 예제 화면으로 이동한다', (tester) async {
+    // 실제 폰과 비슷한 화면 크기 (400 x 889)
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.7;
+    addTearDown(tester.view.reset);
+
     await tester.pumpWidget(const App());
     await tester.pumpAndSettle();
 
+    // 메뉴 제목 → 그 화면에 있어야 하는 문구
     final menus = {
-      '1. BaseView 기본': '+ 버튼 누른 횟수: 0',
+      '1. BaseView 기본': '+ 버튼 누른 횟수',
       '2. 로딩 오버레이': '커스텀 로딩 화면 사용',
       '3. PageState': '커스텀 빌더 사용',
       '4. API와 Failure': '아직 요청하지 않았습니다.',
       '5. Binding과 라우팅': 'lazy vs put',
       '6. 다이얼로그·토스트': 'messageDialog',
+      '실전 예제: 게시글 목록': '글쓰기',
     };
 
     for (final entry in menus.entries) {
-      await tester.tap(find.text(entry.key));
+      final menu = find.text(entry.key);
+      await tester.scrollUntilVisible(menu, 200, scrollable: find.byType(Scrollable).first);
+      await tester.tap(menu);
       await tester.pumpAndSettle();
-      expect(find.text(entry.value), findsOneWidget, reason: entry.key);
+      expect(find.text(entry.value), findsWidgets, reason: entry.key);
 
       Get.back();
       await tester.pumpAndSettle();
@@ -67,8 +77,7 @@ void main() {
 
     await tester.pump(const Duration(seconds: 1));
     await future;
-    await tester.pump();
-    expect(find.text('• 3번 호출 → 실제 실행 1번'), findsOneWidget);
+    expect(c.log.first, '3번 호출 → 실제 실행 1번');
   });
 
   testWidgets('게시글 예제: 조회 성공 시 목록을 보여준다', (tester) async {
