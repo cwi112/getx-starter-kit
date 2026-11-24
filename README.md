@@ -7,7 +7,7 @@
 ![Flutter](https://img.shields.io/badge/Flutter-3.29%2B-02569B?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.7%2B-0175C2?logo=dart)
 ![GetX](https://img.shields.io/badge/GetX-4.7-8A2BE2)
-![tests](https://img.shields.io/badge/tests-15%20passed-brightgreen)
+![tests](https://img.shields.io/badge/tests-18%20passed-brightgreen)
 
 ## 왜 만들었나
 
@@ -148,8 +148,8 @@ class HomeView extends BaseView<HomeController> {
 공통 코드는 모든 화면이 의존하기 때문에, 핵심 동작을 단위·위젯 테스트로 검증했습니다.
 
 ```bash
-flutter test            # 패키지 13개
-cd example && flutter test   # 예제 앱 2개
+flutter test                 # 패키지 13개
+cd example && flutter test   # 예제 앱 5개
 ```
 
 | 대상 | 검증 내용 |
@@ -159,11 +159,23 @@ cd example && flutter test   # 예제 앱 2개
 | `ParsingUtil` | 콤마·부호가 있는 문자열, null, 잘못된 값 처리 |
 | `BaseView` | 로딩 상태에 따라 오버레이 표시/해제 |
 | `PageStateBuilder` | 상태별 화면 전환, 다시 시도 버튼 |
-| 예제 앱 | 가짜 Repository로 조회 성공, 실패 후 재시도 흐름 |
+| 예제 앱 | 메뉴 → 6개 예제 화면 이동, PageState 전환, 연타 방지, 가짜 Repository로 조회 성공·실패 후 재시도 |
 
 ## 예제 앱
 
-[`example/`](example)은 [JSONPlaceholder](https://jsonplaceholder.typicode.com) API로 게시글 목록 조회(화면 영역 상태 처리)와 등록(화면 전체 로딩 오버레이)을 보여줍니다.
+[`example/`](example)은 기능별 예제 화면 모음입니다. 각 파일 맨 위에 "이 파일에서 배우는 것"을, 핵심 코드 옆에 사용법 주석을 달아 두었습니다.
+
+| 메뉴 | 파일 | 보여주는 것 |
+| --- | --- | --- |
+| 1. BaseView 기본 | [`base_view_demo.dart`](example/lib/demos/base_view/base_view_demo.dart) | `appBar`/`body` 구현, `pageColor`·`bottomNavigationBar`·`floatingActionButton` 재정의, 키보드 내리기 |
+| 2. 로딩 오버레이 | [`loading_demo.dart`](example/lib/demos/loading/loading_demo.dart) | `showLoading`/`hideLoading`, `runWithLoading` 성공·실패, 연타 방지, `loadingOverlay` 커스텀 |
+| 3. PageState | [`page_state_demo.dart`](example/lib/demos/page_state/page_state_demo.dart) | 6가지 상태 전환, `PageStateBuilder` 기본/커스텀 화면 비교 |
+| 4. API와 Failure | [`api_demo.dart`](example/lib/demos/api/api_demo.dart) | 실제 API로 성공 / 404 / 연결 오류 / 파싱 오류, sealed `Failure` switch 처리 |
+| 5. Binding과 라우팅 | [`binding_demo.dart`](example/lib/demos/binding/binding_demo.dart) | `lazy`와 `put` 생성 시점 차이, `arguments` 전달, 화면 종료 시 Controller 해제 |
+| 6. 다이얼로그·토스트 | [`dialog_demo.dart`](example/lib/demos/dialog/dialog_demo.dart) | `messageDialog`, `confirmDialog` 결과 처리, `toast` |
+| 실전 예제 | [`posts/`](example/lib/demos/posts) | 실제 프로젝트처럼 view / controller / binding / repository / model 파일을 나눈 게시글 목록 + 등록 |
+
+API 예제는 [JSONPlaceholder](https://jsonplaceholder.typicode.com)를 사용합니다.
 
 ```bash
 cd example

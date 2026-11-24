@@ -1,3 +1,4 @@
+/// 서버 응답(JSON)을 담는 모델. fromJson 으로 Map → 객체 변환.
 class Post {
   const Post({required this.id, required this.title, required this.body});
 
