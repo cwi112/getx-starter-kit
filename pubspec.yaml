@@ -1,7 +1,7 @@
-name: app_base_getx
-description: "GetX 기반 Flutter 앱의 기본 프레임. BaseView / BaseController / BaseBinding / BaseRepository 와 공용 위젯을 제공합니다."
-version: 1.0.0
-homepage: https://github.com/jjwwii/app-base-getx
+name: getx_starter_kit
+description: "GetX 기반 Flutter 앱의 기본 프레임. BaseView / BaseController / BaseBinding / PageState 를 제공하고, 네트워크 계층은 flutter_api_kit 을 사용합니다."
+version: 2.0.0
+homepage: https://github.com/jjwwii/getx-starter-kit
 publish_to: 'none'
 
 environment:
@@ -15,15 +15,14 @@ dependencies:
   # 상태관리, 라우팅, DI
   get: ^4.7.2
 
-  # 통신
-  dio: ^5.8.0
-  pretty_dio_logger: ^1.4.0
-
-  # Either (성공/실패 결과 타입)
-  dartz: ^0.10.1
-
-  # 로그
+  # 로그 타입 (Logger)
   logger: ^2.5.0
+
+  # 네트워크 · Failure · 유틸 (상태관리 무관 계층, re-export)
+  flutter_api_kit:
+    git:
+      url: https://github.com/jjwwii/flutter-api-kit.git
+      ref: main
 
 dev_dependencies:
   flutter_test:

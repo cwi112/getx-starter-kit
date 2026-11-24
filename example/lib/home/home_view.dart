@@ -9,7 +9,7 @@
 // 작은 화면은 이렇게 View, Controller, Binding 을 한 파일에 둬도 된다.
 // 화면이 커지면 posts/ 예제처럼 파일을 나눈다.
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -102,7 +102,7 @@ class _HeroHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('app_base_getx', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
+          const Text('getx_starter_kit', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
           const SizedBox(height: 6),
           Text(
             'GetX 기반 Flutter 앱의 기본 프레임\n예제를 눌러 기능과 사용법을 확인하세요.',

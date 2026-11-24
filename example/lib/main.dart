@@ -1,11 +1,11 @@
 // =============================================================================
-// app_base_getx 예제 앱 진입점
+// getx_starter_kit 예제 앱 진입점
 //
 // 이 파일에서 배우는 것
 // - 앱 시작 시 LoggerUtil, ApiClient 를 한 번만 초기화하는 방법
 // - GetMaterialApp 에 라우트(AppPages)를 연결하는 방법
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,7 +29,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // GetX 의 라우팅, 다이얼로그, 스낵바를 쓰려면 MaterialApp 대신 GetMaterialApp 을 쓴다.
     return GetMaterialApp(
-      title: 'app_base_getx example',
+      title: 'getx_starter_kit example',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light, // 색·버튼·카드 스타일은 theme/app_theme.dart 에서 관리
       initialRoute: AppPages.initialRoute,

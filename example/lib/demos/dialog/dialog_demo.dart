@@ -9,7 +9,7 @@
 // - context 는 View 에만 있으므로, 다이얼로그는 View 에서 띄우고
 //   그 결과로 할 일(삭제, 저장 등)은 Controller 메서드로 넘긴다.
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

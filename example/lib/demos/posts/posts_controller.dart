@@ -5,7 +5,7 @@
 // - 목록 조회: 목록 영역만 로딩 → Rx<PageState> + PageStateBuilder
 // - 글 등록  : 다른 조작을 막아야 함 → runWithLoading (화면 전체 오버레이)
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:get/get.dart';
 
 import 'post.dart';

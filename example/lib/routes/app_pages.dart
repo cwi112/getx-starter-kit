@@ -7,7 +7,7 @@
 //
 // 새 화면을 추가할 때: Routes 에 이름 추가 → AppPages.routes 에 basePage 한 줄 추가
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:get/get.dart';
 
 import '../demos/api/api_demo.dart';

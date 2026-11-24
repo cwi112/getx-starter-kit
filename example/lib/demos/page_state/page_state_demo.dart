@@ -8,7 +8,7 @@
 //   success 만 필수이고, 나머지는 생략하면 기본 화면(로딩, 실패 + 다시 시도 등)을 쓴다.
 // - 한 화면에 상태를 여러 개 둘 수도 있다 (예: 상단 배너 상태, 목록 상태).
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

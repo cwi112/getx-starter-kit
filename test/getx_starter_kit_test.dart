@@ -1,9 +1,10 @@
-import 'package:app_base_getx/app_base_getx.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:logger/logger.dart';
+
+// 네트워크 · Failure · 유틸 테스트는 flutter_api_kit 레포에 있다.
 
 class _TestController extends BaseController {
   final pageState = PageState.initial.obs;
@@ -18,14 +19,6 @@ class _TestView extends BaseView<_TestController> {
   @override
   Widget body(BuildContext context) => const Text('body');
 }
-
-class _TestRepository extends BaseRepository {}
-
-Response<dynamic> _response(int status, [dynamic data]) => Response(
-      requestOptions: RequestOptions(path: '/test'),
-      statusCode: status,
-      data: data,
-    );
 
 void main() {
   setUpAll(() => LoggerUtil.init(logger: Logger(level: Level.off)));
@@ -68,80 +61,17 @@ void main() {
     });
   });
 
-  group('BaseRepository.safeCall', () {
-    final repo = _TestRepository();
+  group('BaseBinding', () {
+    test('lazy 는 처음 찾을 때 생성하고, put 은 즉시 생성한다', () {
+      final binding = _TestBinding()..dependencies();
 
-    test('2xx 응답은 parser 결과를 Right 로 준다', () async {
-      final r = await repo.safeCall(
-        () async => _response(200, {'name': 'kim'}),
-        parser: (data) => data['name'] as String,
-      );
-      expect(r, const Right<Failure, String>('kim'));
-    });
+      expect(Get.isPrepared<_LazyService>(), isTrue);
+      expect(Get.isRegistered<_EagerService>(), isTrue);
+      expect(Get.isPrepared<_EagerService>(), isFalse);
 
-    test('2xx 가 아니면 ResponseFailure', () async {
-      final r = await repo.safeCall(() async => _response(404), parser: (d) => d);
-      final failure = r.fold((l) => l, (_) => null);
-      expect(failure, isA<ResponseFailure>());
-      expect(failure!.message, '요청한 자원을 찾을 수 없습니다.');
-    });
-
-    test('badResponse DioException 은 상태 코드로 ResponseFailure', () async {
-      final r = await repo.safeCall(
-        () async => throw DioException(
-          requestOptions: RequestOptions(path: '/test'),
-          type: DioExceptionType.badResponse,
-          response: _response(500),
-        ),
-        parser: (d) => d,
-      );
-      final failure = r.fold((l) => l, (_) => null);
-      expect(failure, isA<ResponseFailure>());
-      expect((failure as ResponseFailure).statusCode, 500);
-    });
-
-    test('연결 오류는 NetworkFailure', () async {
-      final r = await repo.safeCall(
-        () async => throw DioException.connectionError(
-          requestOptions: RequestOptions(path: '/test'),
-          reason: 'offline',
-        ),
-        parser: (d) => d,
-      );
-      final failure = r.fold((l) => l, (_) => null);
-      expect(failure, isA<NetworkFailure>());
-      expect((failure as NetworkFailure).isConnectionError, isTrue);
-    });
-
-    test('parser 예외는 UnknownFailure', () async {
-      final r = await repo.safeCall(
-        () async => _response(200, 'not a map'),
-        parser: (d) => (d as Map)['x'],
-      );
-      expect(r.fold((l) => l, (_) => null), isA<UnknownFailure>());
-    });
-  });
-
-  group('ParsingUtil', () {
-    test('콤마와 + 기호를 처리하고 실패하면 기본값', () {
-      expect(ParsingUtil.stringToInt('1,000'), 1000);
-      expect(ParsingUtil.stringToInt('+500'), 500);
-      expect(ParsingUtil.stringToInt('abc'), 0);
-      expect(ParsingUtil.stringToInt(null), 0);
-      expect(ParsingUtil.stringToDouble('1.5'), 1.5);
-      expect(ParsingUtil.stringToBigInt('99999999999999999999'),
-          BigInt.parse('99999999999999999999'));
-    });
-
-    test('jsonToList 는 null 이면 빈 리스트', () {
-      expect(ParsingUtil.jsonToList<int>(null, (j) => j['v'] as int), isEmpty);
-      expect(
-        ParsingUtil.jsonToList<int>([
-          {'v': 1},
-          {'v': 2},
-        ], (j) => j['v'] as int),
-        [1, 2],
-      );
+      Get.find<_LazyService>();
+      expect(Get.isPrepared<_LazyService>(), isFalse);
+      expect(binding, isA<Bindings>());
     });
   });
 
@@ -188,4 +118,16 @@ void main() {
       expect(find.text('done'), findsOneWidget);
     });
   });
+}
+
+class _LazyService {}
+
+class _EagerService {}
+
+class _TestBinding extends BaseBinding {
+  @override
+  void dependencies() {
+    lazy(() => _LazyService());
+    put(_EagerService());
+  }
 }

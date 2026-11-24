@@ -1,4 +1,4 @@
-# app_base_getx
+# getx_starter_kit
 
 > GetX 기반 Flutter 앱을 새로 시작할 때 바로 가져다 쓰는 **기본 프레임 패키지**
 
@@ -7,7 +7,26 @@
 ![Flutter](https://img.shields.io/badge/Flutter-3.29%2B-02569B?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.7%2B-0175C2?logo=dart)
 ![GetX](https://img.shields.io/badge/GetX-4.7-8A2BE2)
-![tests](https://img.shields.io/badge/tests-18%20passed-brightgreen)
+![tests](https://img.shields.io/badge/tests-12%20passed-brightgreen)
+
+## 패키지 구성
+
+이 패키지는 두 계층으로 나뉘어 있습니다.
+
+```
+flutter_api_kit      ← 네트워크 · Failure · 유틸 (상태관리 무관, 별도 레포)
+      ▲
+      │ 의존 + re-export
+getx_starter_kit     ← BaseView · BaseController · BaseBinding · PageState (GetX)
+```
+
+| 패키지 | 담당 | GetX 필요 |
+| --- | --- | --- |
+| [flutter_api_kit](https://github.com/jjwwii/flutter-api-kit) | `ApiClient`, `BaseRepository.safeCall`, `Failure`, `ParsingUtil`, `LoggerUtil`, `context` 확장 | 아니요 |
+| **getx_starter_kit** (이 레포) | `BaseView`, `BaseController`, `BaseBinding`, `PageState`, `PageStateBuilder`, 공용 위젯 | 예 |
+
+- 네트워크 계층은 상태관리와 무관해서, Provider·Riverpod 프로젝트에서는 `flutter_api_kit`만 가져다 쓸 수 있습니다.
+- `getx_starter_kit`은 `flutter_api_kit`을 다시 내보내므로(re-export) **import 한 줄로 두 패키지를 모두** 씁니다.
 
 ## 왜 만들었나
 
@@ -23,20 +42,19 @@
 
 ```
 lib/
-├── app_base_getx.dart            # import 한 줄로 전체 사용
+├── getx_starter_kit.dart         # import 한 줄로 전체 사용 (flutter_api_kit 포함)
 └── src/
     ├── base/
     │   ├── base_view.dart        # GetView 확장: 로딩 오버레이, 키보드 처리, Scaffold 공통 설정
     │   ├── base_controller.dart  # GetxController 확장: 상태 변경, runWithLoading
     │   ├── base_binding.dart     # Bindings 확장: lazy/put 헬퍼, basePage()
     │   └── page_state.dart       # initial / loading / success / failed / empty / noInternet
-    ├── network/
-    │   ├── api_client.dart       # Dio 싱글턴 (baseUrl, 공통 헤더, 타임아웃, 로그)
-    │   ├── base_repository.dart  # safeCall → Either<Failure, T>
-    │   └── failure.dart          # ResponseFailure / NetworkFailure / UnknownFailure
-    ├── widgets/                  # PageStateBuilder, ScaffoldLoading, Height/Width
-    ├── extensions/               # context.toast / messageDialog / confirmDialog
-    └── utils/                    # LoggerUtil, ParsingUtil
+    └── widgets/                  # PageStateBuilder, ScaffoldLoading, Height/Width
+
+flutter_api_kit (별도 레포)
+    ├── network/                  # ApiClient, BaseRepository.safeCall, Failure
+    ├── utils/                    # LoggerUtil, ParsingUtil
+    └── extensions/               # context.toast / messageDialog / confirmDialog
 ```
 
 데이터 흐름은 다음과 같습니다.
@@ -51,11 +69,17 @@ View (BaseView) ──Obx──▶ Controller (BaseController) ──▶ Reposit
 
 ```yaml
 dependencies:
-  app_base_getx:
+  getx_starter_kit:
     git:
-      url: https://github.com/jjwwii/app-base-getx.git
+      url: https://github.com/jjwwii/getx-starter-kit.git
       ref: master
 ```
+
+```dart
+import 'package:getx_starter_kit/getx_starter_kit.dart'; // flutter_api_kit 도 함께 사용 가능
+```
+
+`flutter_api_kit`은 자동으로 함께 설치됩니다.
 
 ## 사용법
 
@@ -148,18 +172,19 @@ class HomeView extends BaseView<HomeController> {
 공통 코드는 모든 화면이 의존하기 때문에, 핵심 동작을 단위·위젯 테스트로 검증했습니다.
 
 ```bash
-flutter test                 # 패키지 13개
+flutter test                 # 패키지 7개
 cd example && flutter test   # 예제 앱 5개
 ```
 
 | 대상 | 검증 내용 |
 | --- | --- |
 | `BaseController` | 상태 변경, `runWithLoading` 성공·실패·중복 실행 방지 |
-| `BaseRepository.safeCall` | 2xx 성공, 4xx/5xx → `ResponseFailure`, 연결 오류 → `NetworkFailure`, 파싱 오류 → `UnknownFailure` |
-| `ParsingUtil` | 콤마·부호가 있는 문자열, null, 잘못된 값 처리 |
+| `BaseBinding` | `lazy`는 처음 찾을 때, `put`은 즉시 생성 |
 | `BaseView` | 로딩 상태에 따라 오버레이 표시/해제 |
 | `PageStateBuilder` | 상태별 화면 전환, 다시 시도 버튼 |
-| 예제 앱 | 메뉴 → 6개 예제 화면 이동, PageState 전환, 연타 방지, 가짜 Repository로 조회 성공·실패 후 재시도 |
+| 예제 앱 | 메뉴 → 7개 예제 화면 이동, PageState 전환, 연타 방지, 가짜 Repository로 조회 성공·실패 후 재시도 |
+
+`safeCall`, `Failure`, `ParsingUtil` 테스트(11개)는 [flutter_api_kit](https://github.com/jjwwii/flutter-api-kit)에 있습니다.
 
 ## 예제 앱
 
@@ -208,7 +233,7 @@ Android 빌드 설정은 Flutter 3.50 템플릿 기준(Gradle 9.5, AGP 9.3, Kotl
 ## 기술 스택
 
 - **상태관리 · 라우팅 · DI**: GetX
-- **네트워크**: Dio, pretty_dio_logger
+- **네트워크**: [flutter_api_kit](https://github.com/jjwwii/flutter-api-kit) (Dio, pretty_dio_logger)
 - **결과 타입**: dartz `Either`
 - **로그**: logger
 - **테스트**: flutter_test (단위, 위젯)

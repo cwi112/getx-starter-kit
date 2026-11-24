@@ -6,7 +6,7 @@
 // - 목록: PageStateBuilder + RefreshIndicator(당겨서 새로고침)
 // - 등록: FAB → controller.createPost() → 결과를 toast 로 안내
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

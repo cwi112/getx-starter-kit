@@ -1,4 +1,4 @@
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:example/demos/loading/loading_demo.dart';
 import 'package:example/demos/page_state/page_state_demo.dart';
 import 'package:example/demos/posts/post.dart';

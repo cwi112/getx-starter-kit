@@ -9,7 +9,7 @@
 // - Get.toNamed(경로, arguments: 값) 으로 다음 화면에 값을 넘기고,
 //   다음 화면의 Binding 에서 Get.arguments 로 받는다.
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
-import '../utils/logger_util.dart';
+import 'package:flutter_api_kit/flutter_api_kit.dart';
 import 'page_state.dart';
 
 /// 모든 화면 컨트롤러(ViewModel)의 공통 부모.

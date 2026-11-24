@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.7.2
 
-  app_base_getx:
+  getx_starter_kit:
     path: ../
 
 dev_dependencies:

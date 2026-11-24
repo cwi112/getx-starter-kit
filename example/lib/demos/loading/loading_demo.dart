@@ -8,7 +8,7 @@
 // - 로딩 중에 다시 호출하면 실행하지 않는다 → 버튼 연타로 인한 중복 요청 방지.
 // - View 에서 loadingOverlay() 를 재정의하면 로딩 화면 디자인을 바꿀 수 있다.
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

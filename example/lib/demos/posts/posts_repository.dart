@@ -4,7 +4,7 @@
 // 실제 프로젝트에서는 화면마다 이 파일 하나에 그 화면이 쓰는 API 를 모은다.
 // ParsingUtil.jsonToList 로 JSON 배열을 모델 목록으로 바꾼다.
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 
 import 'post.dart';
 

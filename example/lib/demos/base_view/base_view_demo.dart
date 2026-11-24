@@ -7,7 +7,7 @@
 // - 화면 빈 곳을 탭하면 키보드가 자동으로 내려간다 (unfocusOnTap, 기본 true).
 // - Rx 값(.obs)을 Obx(() => ...) 안에서 읽으면 값이 바뀔 때 그 부분만 다시 그려진다.
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

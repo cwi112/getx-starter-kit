@@ -10,7 +10,7 @@
 //     NetworkFailure  : 인터넷 끊김, 타임아웃 등
 //     UnknownFailure  : 응답 파싱 실패 등 그 밖의 오류
 // =============================================================================
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

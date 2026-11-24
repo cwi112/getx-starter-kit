@@ -1,4 +1,4 @@
-import 'package:app_base_getx/app_base_getx.dart';
+import 'package:getx_starter_kit/getx_starter_kit.dart';
 import 'package:get/get.dart';
 
 import 'posts_controller.dart';
