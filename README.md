@@ -177,10 +177,33 @@ cd example && flutter test   # 예제 앱 5개
 
 API 예제는 [JSONPlaceholder](https://jsonplaceholder.typicode.com)를 사용합니다.
 
+모든 예제 화면은 같은 구성입니다: **"이 화면에서 배우는 것" 안내 → 기능별 섹션 카드(설명 · 실행 버튼 · 코드 예시) → 실행 로그/결과**. 화면을 직접 조작하면서 바로 아래에서 해당 코드를 확인할 수 있습니다.
+
+### 예제 앱 구조
+
+```
+example/lib/
+├── main.dart                 # LoggerUtil · ApiClient 초기화, GetMaterialApp
+├── routes/app_pages.dart     # Routes 이름 + basePage 등록
+├── theme/app_theme.dart      # 공통 테마 (색상 · 카드 · 버튼 · 입력창 · 스낵바 · 다이얼로그)
+├── common/demo_widgets.dart  # 공통 컴포넌트 (DemoHeader, DemoSection, CodeBox, StatusPill, LogPanel)
+├── home/home_view.dart       # 메뉴 화면
+└── demos/
+    ├── base_view/  loading/  page_state/  api/  binding/  dialog/   # 기능별 예제 (화면 1개 = 파일 1개)
+    └── posts/      # 실전 예제: view / controller / binding / repository / model 분리
+```
+
+- 색·모서리·버튼 모양은 `AppTheme` 한곳에서 관리하고, 화면 코드에서는 테마와 공통 컴포넌트를 재사용합니다.
+- 작은 예제는 View·Controller·Binding을 한 파일에 두고, 실전 예제는 실제 프로젝트처럼 파일을 나눴습니다.
+
+### 실행
+
 ```bash
 cd example
-flutter run
+fvm flutter run   # 또는 flutter run
 ```
+
+Android 빌드 설정은 Flutter 3.50 템플릿 기준(Gradle 9.5, AGP 9.3, Kotlin 2.4, Java 17)입니다.
 
 ## 기술 스택
 
